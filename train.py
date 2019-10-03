@@ -96,11 +96,13 @@ def main(args=None):
 		raise ValueError('Unsupported model depth, must be one of 18, 34, 50, 101, 152')		
 
 	use_gpu = True
+	#use_gpu = False
 
 	if use_gpu:
 		retinanet = retinanet.cuda()
 	
 	retinanet = torch.nn.DataParallel(retinanet).cuda()
+	#retinanet = torch.nn.DataParallel(retinanet)
 
 	retinanet.training = True
 
