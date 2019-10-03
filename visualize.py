@@ -45,9 +45,9 @@ def main(args=None):
 	dataloader_val = DataLoader(dataset_val, num_workers=1, collate_fn=collater, batch_sampler=sampler_val)
 
 	retinanet = torch.load(parser.model)
-
+	#retinanet = torch.load(parser.model, map_location="cpu")
 	use_gpu = True
-
+	#use_gpu = False
 	if use_gpu:
 		retinanet = retinanet.cuda()
 
@@ -66,6 +66,7 @@ def main(args=None):
 		with torch.no_grad():
 			st = time.time()
 			scores, classification, transformed_anchors = retinanet(data['img'].cuda().float())
+			#scores, classification, transformed_anchors = retinanet(data['img'].float())
 			print('Elapsed time: {}'.format(time.time()-st))
 			idxs = np.where(scores>0.5)
 			img = np.array(255 * unnormalize(data['img'][0, :, :, :])).copy()
