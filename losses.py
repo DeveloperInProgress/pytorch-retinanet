@@ -48,7 +48,9 @@ class FocalLoss(nn.Module):
 
             if bbox_annotation.shape[0] == 0:
                 regression_losses.append(torch.tensor(0).float().cuda())
+                #regression_losses.append(torch.tensor(0).float())
                 classification_losses.append(torch.tensor(0).float().cuda())
+                #classification_losses.append(torch.tensor(0).float())
 
                 continue
 
@@ -63,7 +65,7 @@ class FocalLoss(nn.Module):
 
             # compute the loss for classification
             targets = torch.ones(classification.shape) * -1
-            targets = targets.cuda()
+            #targets = targets.cuda()
 
             targets[torch.lt(IoU_max, 0.4), :] = 0
 
@@ -88,6 +90,7 @@ class FocalLoss(nn.Module):
             cls_loss = focal_weight * bce
 
             cls_loss = torch.where(torch.ne(targets, -1.0), cls_loss, torch.zeros(cls_loss.shape).cuda())
+            #cls_loss = torch.where(torch.ne(targets, -1.0), cls_loss, torch.zeros(cls_loss.shape))
 
             classification_losses.append(cls_loss.sum()/torch.clamp(num_positive_anchors.float(), min=1.0))
 
@@ -133,6 +136,7 @@ class FocalLoss(nn.Module):
                 regression_losses.append(regression_loss.mean())
             else:
                 regression_losses.append(torch.tensor(0).float().cuda())
+                #regression_losses.append(torch.tensor(0).float())
 
         return torch.stack(classification_losses).mean(dim=0, keepdim=True), torch.stack(regression_losses).mean(dim=0, keepdim=True)
 
